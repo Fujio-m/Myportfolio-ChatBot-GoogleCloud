@@ -1,0 +1,4 @@
+backend-app/.streamlit/
+backend-app/__pycache__/
+backend-app/venv/
+backend-app/.venv/
