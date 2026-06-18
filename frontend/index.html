@@ -1,17 +1,27 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>勤怠管理AIチャットボット - ポートフォリオ</title>
     <meta name="description" content="Gemini APIを活用し、社内規定（PDF）に基づいた正確な回答を行うRAGチャットボット。PDCA改善サイクルとクラウドインフラ最適化を考慮した設計。">
+    <!-- OGP Tags for SNS sharing -->
+    <meta property="og:title" content="勤怠管理AIチャットボット - ポートフォリオ">
+    <meta property="og:description"
+        content="Gemini APIを活用し、社内規定（PDF）に基づいた正確な回答を行うRAGチャットボット。PDCA改善サイクルとクラウドインフラ最適化を考慮した設計。">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="img/chat_sample.png">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
     <!-- Style Sheet -->
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
     <!-- Sticky Navigation Header -->
@@ -30,12 +40,13 @@
             <span class="badge">Portfolio Project</span>
             <h1>勤怠管理Q&amp;Aチャットボット</h1>
             <p class="subtitle">Gemini API × RAGによる社内問い合わせの自動化と、PDCA運用・インフラ最適化の設計</p>
-            
+
             <div class="hero-actions">
                 <!-- 新アプリ(Cloud Run)のURLが決まりましたら、hrefの値を置き換えてください -->
                 <a href="#" class="btn btn-primary" target="_blank">🚀 新アプリを体験する (Cloud Run / 高速・セキュア)</a>
                 <!-- 旧アプリ(Streamlit Cloud)のURL -->
-                <a href="https://myportfolio-fujio-chatbot.streamlit.app/" class="btn btn-secondary" target="_blank">📄 プロトタイプ版を見る (Streamlit Cloud)</a>
+                <a href="https://myportfolio-fujio-chatbot.streamlit.app/" class="btn btn-secondary" target="_blank">📄
+                    プロトタイプ版を見る (Streamlit Cloud)</a>
             </div>
             <p class="demo-caption">※新アプリは現在Google Cloudへのデプロイを想定して構築中です。</p>
         </section>
@@ -121,9 +132,11 @@
                         <summary>🔍 初期化と対話プロセスの詳細解説</summary>
                         <div class="details-content">
                             <h4>⚙️ 1. 初期化プロセス（安全な起動準備）</h4>
-                            <p>アプリが起動した際、セキュリティを考慮し環境変数やSecrets設定ファイルから安全にAPI認証情報を読み込みます。その後、就業規則PDFからテキストデータを抽出し、検索用メモリ空間を確保します。</p>
+                            <p>アプリが起動した際、セキュリティを考慮し環境変数やSecrets設定ファイルから安全にAPI認証情報を読み込みます。その後、就業規則PDFからテキストデータを抽出し、検索用メモリ空間を確保します。
+                            </p>
                             <h4>💬 2. 対話プロセス（ユーザーとの対話フロー）</h4>
-                            <p>ユーザーが質問を入力すると、その質問内容とPDFテキストを組み合わせてシステムプロンプトに注入します。<strong>Gemini 2.5 Flash-lite</strong>モデルに送り、コンテキストに基づいた厳格な回答をUIに表示します。</p>
+                            <p>ユーザーが質問を入力すると、その質問内容とPDFテキストを組み合わせてシステムプロンプトに注入します。<strong>Gemini 2.5
+                                    Flash-lite</strong>モデルに送り、コンテキストに基づいた厳格な回答をUIに表示します。</p>
                         </div>
                     </details>
                 </div>
@@ -173,9 +186,18 @@
                         <h3>🛠️ 技術スタック</h3>
                         <table class="stack-table">
                             <tbody>
-                                <tr><td>開発言語</td><td>Python 3.13.2 / HTML / JS</td></tr>
-                                <tr><td>AIモデル</td><td>Gemini 2.5 Flash-lite</td></tr>
-                                <tr><td>インフラ</td><td>Cloud Run / Secret Manager</td></tr>
+                                <tr>
+                                    <td>開発言語</td>
+                                    <td>Python 3.13.2 / HTML / JS</td>
+                                </tr>
+                                <tr>
+                                    <td>AIモデル</td>
+                                    <td>Gemini 2.5 Flash-lite</td>
+                                </tr>
+                                <tr>
+                                    <td>インフラ</td>
+                                    <td>Cloud Run / Secret Manager</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -200,37 +222,33 @@
                 </div>
                 <div class="operation-steps">
                     <!-- Step 1 Trigger -->
-                    <div class="step-card step-card-trigger" 
-                         data-step-title="1. 【Plan】課題の検知とエスカレーション" 
-                         data-step-img="img/chat_fail.png"
-                         data-step-desc="<strong>【ユーザー視点】</strong><br>・資料にない質問に対し、AIが無理に答えず「回答不可」と正しく判定します。<br>・解決しなかった場合に、チャット画面上に問い合わせフォームへの案内リンクが表示され、ユーザーの具体的な質問をスムーズに収集できます。">
+                    <div class="step-card step-card-trigger" data-step-title="1. 【Plan】課題の検知とエスカレーション"
+                        data-step-img="img/chat_fail.png"
+                        data-step-desc="<strong>【ユーザー視点】</strong><br>・資料にない質問に対し、AIが無理に答えず「回答不可」と正しく判定します。<br>・解決しなかった場合に、チャット画面上に問い合わせフォームへの案内リンクが表示され、ユーザーの具体的な質問をスムーズに収集できます。">
                         <div class="step-num">1</div>
                         <h4>【Plan】課題の検知とエスカレーション</h4>
                         <p class="click-guide">💡 詳細を表示</p>
                     </div>
                     <!-- Step 2 Trigger -->
-                    <div class="step-card step-card-trigger" 
-                         data-step-title="2. 【Do】現場の声をデータ化" 
-                         data-step-img="img/form_submit.png"
-                         data-step-desc="<strong>【データ収集】</strong><br>・ユーザーがフォームに入力した内容は、Google Forms等を通じてリアルタイムで送信されます。<br>・現場で本当に発生している未解決課題が一元的に可視化されます。">
+                    <div class="step-card step-card-trigger" data-step-title="2. 【Do】現場の声をデータ化"
+                        data-step-img="img/form_submit.png"
+                        data-step-desc="<strong>【データ収集】</strong><br>・ユーザーがフォームに入力した内容は、Google Forms等を通じてリアルタイムで送信されます。<br>・現場で本当に発生している未解決課題が一元的に可視化されます。">
                         <div class="step-num">2</div>
                         <h4>【Do】現場の声をデータ化</h4>
                         <p class="click-guide">💡 詳細を表示</p>
                     </div>
                     <!-- Step 3 Trigger -->
-                    <div class="step-card step-card-trigger" 
-                         data-step-title="3. 【Check】未解決問題の分析" 
-                         data-step-img="img/spreadsheet.png"
-                         data-step-desc="<strong>【管理者視点】</strong><br>・問い合わせはスプレッドシートで管理。<br>・管理者は「PDFのどこを追記すべきか」を分析し、プログラム改修なしで対応を検討します。">
+                    <div class="step-card step-card-trigger" data-step-title="3. 【Check】未解決問題の分析"
+                        data-step-img="img/spreadsheet.png"
+                        data-step-desc="<strong>【管理者視点】</strong><br>・問い合わせはスプレッドシートで管理。<br>・管理者は「PDFのどこを追記すべきか」を分析し、プログラム改修なしで対応を検討します。">
                         <div class="step-num">3</div>
                         <h4>【Check】未解決問題の分析</h4>
                         <p class="click-guide">💡 詳細を表示</p>
                     </div>
                     <!-- Step 4 Trigger -->
-                    <div class="step-card step-card-trigger" 
-                         data-step-title="4. 【Act】PDF更新による課題解決" 
-                         data-step-img="img/chat_success.png"
-                         data-step-desc="<strong>【結果】</strong><br>・管理者がPDFを上書きするだけで、AIが即座に反映。<br>・次回から同じ質問に的確に回答できるようになり、精度が向上します。">
+                    <div class="step-card step-card-trigger" data-step-title="4. 【Act】PDF更新による課題解決"
+                        data-step-img="img/chat_success.png"
+                        data-step-desc="<strong>【結果】</strong><br>・管理者がPDFを上書きするだけで、AIが即座に反映。<br>・次回から同じ質問に的確に回答できるようになり、精度が向上します。">
                         <div class="step-num">4</div>
                         <h4>【Act】PDF更新による課題解決</h4>
                         <p class="click-guide">💡 詳細を表示</p>
@@ -241,16 +259,16 @@
     </div>
 
     <!-- PDCA Step Detail Modal (Secondary Popup) -->
-    <div id="modal" class="modal">
+    <div id="pdca-detail-modal" class="modal">
         <!-- PDCAサイクルの各ステップ詳細。情報を整理しやすくするため、一回り大きい modal-lg を適用 -->
         <div class="modal-content modal-lg">
-            <span id="modal-close" class="modal-close">&times;</span>
-            <h2 id="modal-title" class="modal-header-title">ステップ詳細</h2>
+            <span id="pdca-modal-close" class="modal-close">&times;</span>
+            <h2 id="pdca-modal-title" class="modal-header-title">ステップ詳細</h2>
             <div class="modal-body">
                 <div class="modal-img-wrapper">
-                    <img id="modal-img" src="" alt="">
+                    <img id="pdca-modal-img" src="" alt="">
                 </div>
-                <div id="modal-desc" class="modal-desc"></div>
+                <div id="pdca-modal-desc" class="modal-desc"></div>
             </div>
         </div>
     </div>
@@ -266,7 +284,7 @@
                         <h3>基本情報</h3>
                         <p><strong>名前 (GitHub名)</strong>: Fujio-m</p>
                         <p><strong>年齢</strong>: 34歳</p>
-                        
+
                         <h3>目標・キャリアビジョン</h3>
                         <p class="vision-text">
                             エンジニアとして、まずはシステム開発の基礎やテスト、ヘルプデスク等の幅広い工程から実務経験を積み、様々な案件に対応できる技術スキルを養いたいと考えています。<br><br>
@@ -282,6 +300,7 @@
                                     <li>Azure AZ-900 / DP-900 / AI-900</li>
                                     <li>Microsoft PL-900</li>
                                     <li>Google Cloud Generative AI Leader</li>
+                                    <li>Google Cloud Cloud Digital Leader</li>
                                 </ul>
                             </details>
                             <details>
@@ -289,7 +308,7 @@
                                 <ul>
                                     <li>基本情報技術者</li>
                                     <li>ITパスポート</li>
-                                    <li>Python 3 エンジニア認定 (基礎・データ分析)</li>
+                                    <li>Python 3 エンジニア認定 (基礎・データ分析・実践試験)</li>
                                     <li>Oracle Java SE Bronze</li>
                                 </ul>
                             </details>
@@ -310,11 +329,13 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2026 Fujio-m. All Rights Reserved. | <a href="https://github.com/" target="_blank">GitHub Repository</a></p>
+            <p>&copy; 2026 Fujio-m. All Rights Reserved. | <a href="https://github.com/" target="_blank">GitHub
+                    Repository</a></p>
         </div>
     </footer>
 
     <!-- JavaScript File -->
     <script src="js/main.js"></script>
 </body>
+
 </html>

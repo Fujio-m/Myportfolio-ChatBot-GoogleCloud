@@ -1,4 +1,17 @@
-backend-app/.streamlit/
-backend-app/__pycache__/
-backend-app/venv/
-backend-app/.venv/
+# Python virtual environments
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Streamlit secrets (Sensitive data - DO NOT COMMIT)
+chatbot-app/.streamlit/secrets.toml
+
+# Streamlit/Python cache & environment in app folder
+chatbot-app/__pycache__/
+chatbot-app/venv/
+chatbot-app/.venv/
