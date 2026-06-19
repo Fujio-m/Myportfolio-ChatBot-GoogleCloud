@@ -703,3 +703,47 @@ tr:last-child td {
         padding: 0 20px 24px 20px;
     }
 }
+
+/* ----------------------------------
+   再構築理由ボックス (Rebuild Reason Box)
+   ---------------------------------- */
+.rebuild-reason-box {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(30, 41, 59, 0.5) 100%);
+    border: 1px solid rgba(14, 165, 233, 0.2);
+    border-radius: 8px;
+    padding: 22px;
+    margin-top: 15px;
+    margin-bottom: 25px;
+}
+
+.rebuild-reason-box h4 {
+    color: var(--primary);
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rebuild-reason-box p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+.rebuild-reason-box .styled-list {
+    margin-bottom: 12px;
+}
+
+.rebuild-reason-box .styled-list li {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.rebuild-reason-box .styled-list li strong {
+    color: var(--text-primary);
+}
+

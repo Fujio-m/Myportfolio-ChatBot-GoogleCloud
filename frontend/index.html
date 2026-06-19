@@ -6,25 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>勤怠管理AIチャットボット - ポートフォリオ</title>
     <meta name="description" content="Gemini APIを活用し、社内規定（PDF）に基づいた正確な回答を行うRAGチャットボット。PDCA改善サイクルとクラウドインフラ最適化を考慮した設計。">
-    <!-- OGP Tags for SNS sharing -->
+    <!-- SNS共有用のOGPタグ -->
     <meta property="og:title" content="勤怠管理AIチャットボット - ポートフォリオ">
     <meta property="og:description"
         content="Gemini APIを活用し、社内規定（PDF）に基づいた正確な回答を行うRAGチャットボット。PDCA改善サイクルとクラウドインフラ最適化を考慮した設計。">
     <meta property="og:type" content="website">
     <meta property="og:image" content="img/chat_sample.png">
-    <!-- Google Fonts -->
+    <!-- Google Fontsの読み込み -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap"
         rel="stylesheet">
-    <!-- Style Sheet -->
+    <!-- スタイルシートの読み込み -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-    <!-- Sticky Navigation Header -->
+    <!-- 固定ナビゲーションヘッダー -->
     <header class="nav-header">
         <div class="nav-container">
             <div class="logo">Portfolio</div>
@@ -32,42 +32,41 @@
         </div>
     </header>
 
-    <!-- Main Content Container (Centered 1-Column) -->
+    <!-- メインコンテンツコンテナ (中央寄せ1カラム) -->
     <main class="main-content container">
 
-        <!-- Hero Section (Action Buttons at the top) -->
+        <!-- ヒーローセクション (上部のアクションボタン) -->
         <section class="hero-section">
-            <span class="badge">Portfolio Project</span>
             <h1>勤怠管理Q&amp;Aチャットボット</h1>
             <p class="subtitle">Gemini API × RAGによる社内問い合わせの自動化と、PDCA運用・インフラ最適化の設計</p>
 
             <div class="hero-actions">
-                <!-- 新アプリ(Cloud Run)のURLが決まりましたら、hrefの値を置き換えてください -->
-                <a href="#" class="btn btn-primary" target="_blank">🚀 新アプリを体験する (Cloud Run / 高速・セキュア)</a>
+                <!-- 新アプリ(Cloud Run)のURLが決まりましたら、hrefの値を置き換え、現状はローカルのURL -->
+                <a href="http://localhost:8501" class="btn btn-primary" target="_blank">Chatbotアプリ(Cloud Run)</a>
                 <!-- 旧アプリ(Streamlit Cloud)のURL -->
-                <a href="https://myportfolio-fujio-chatbot.streamlit.app/" class="btn btn-secondary" target="_blank">📄
-                    プロトタイプ版を見る (Streamlit Cloud)</a>
+                <a href="https://myportfolio-fujio-chatbot.streamlit.app/" class="btn btn-secondary" target="_blank">
+                    プロトタイプ版 (Streamlit Cloud)</a>
             </div>
-            <p class="demo-caption">※新アプリは現在Google Cloudへのデプロイを想定して構築中です。</p>
+            <p class="demo-caption">※プロトタイプ（Streamlit Cloud）での起動速度やセキュリティの課題を解消するため、Google Cloud（Cloud Run）による本番構成へ再構築しました。（新アプリは現在Google Cloudへのデプロイを想定して構築中です）</p>
         </section>
 
-        <!-- Main Sections Grid (Trigger Cards) -->
+        <!-- メインセッショングリッド (トリガーカード) -->
         <div class="section-trigger-grid">
-            <!-- Trigger 1: About -->
+            <!-- トリガー1: プロジェクト概要と課題 -->
             <section id="about-trigger" class="card section-trigger-card">
                 <h2 class="section-title">💡 プロジェクト概要と課題</h2>
                 <p>実務課題の解決背景、RAGによる根拠回答の仕組みについて</p>
                 <div class="trigger-footer">詳細を表示する →</div>
             </section>
 
-            <!-- Trigger 2: Architecture -->
+            <!-- トリガー2: 構成図と技術スタック -->
             <section id="architecture-trigger" class="card section-trigger-card">
                 <h2 class="section-title">🛠️ 構成図 &amp; 技術スタック</h2>
                 <p>システム設計、新旧アーキテクチャの比較、セキュリティ設計について</p>
                 <div class="trigger-footer">詳細を表示する →</div>
             </section>
 
-            <!-- Trigger 3: Operation (PDCA) -->
+            <!-- トリガー3: PDF更新サイクル (PDCA) -->
             <section id="operation-trigger" class="card section-trigger-card">
                 <h2 class="section-title">🔄 PDF更新サイクル(PDCA)</h2>
                 <p>AIが答えられなかった質問を収集し、PDF更新で解決する運用設計</p>
@@ -77,7 +76,7 @@
 
     </main>
 
-    <!-- Modal: Section 1 (About) -->
+    <!-- モーダル: セクション1 (プロジェクト概要と課題) -->
     <div id="about-modal" class="modal">
         <div class="modal-content modal-lg">
             <span class="modal-close">&times;</span>
@@ -87,14 +86,20 @@
                     <div>
                         <h3>開発の背景・動機</h3>
                         <p>私は現在、勤怠管理ツールの担当として、新規入職者からの問い合わせ対応や、ルールの確認・エスカレーション業務に従事しています。</p>
-                        <p>業務の中で直面した「新規入職者から同じような質問が毎回届き、担当者や上司への確認作業で業務負荷が発生している」という実務課題を解決するため、本システムを開発しました。</p>
+                        <p>業務の中で直面した課題を解決するため、本システムを開発しました。</p>
                     </div>
                     <div>
-                        <h3>解決したい課題と狙い</h3>
+                        <h3>解決したい課題</h3>
                         <ul class="styled-list">
-                            <li><strong>自己解決率の向上</strong>：チャットボットが規定に基づいて即時に正確な答えを提示し、自己解決を促します。</li>
-                            <li><strong>対応工数の削減</strong>：同じ質問への二重対応を自動化し、管理部門の付帯作業時間を削減します。</li>
-                            <li><strong>メンテナンス負担の低減</strong>：プログラムの改修なしで、PDF資料の更新だけでAIの回答を最新化できます。</li>
+                            <li><strong>自己解決率の向上</strong>
+                                <p>Q&Aチャットボット導入による従業員の自己解決率の向上</p>
+                            </li>
+                            <li><strong>対応工数の削減</strong>
+                                <p>同じ質問への二重対応を自動化し、対応時間を削減</p>
+                            </li>
+                            <li><strong>メンテナンス負担の低減</strong>
+                                <p>PDF資料の更新だけでAIの回答を最新化できるので更新作業負担低減</p>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -117,7 +122,7 @@
         </div>
     </div>
 
-    <!-- Modal: Section 2 (Architecture) -->
+    <!-- モーダル: セクション2 (システム構成図と技術スタック) -->
     <div id="architecture-modal" class="modal">
         <div class="modal-content modal-lg">
             <span class="modal-close">&times;</span>
@@ -145,6 +150,16 @@
 
                 <div class="architecture-evolution">
                     <h3>📈 アーキテクチャの進化（リアーキテクチャ）</h3>
+                    <div class="rebuild-reason-box">
+                        <h4>💡 なぜプロトタイプからGoogle Cloud版へ再構築したのか？</h4>
+                        <p>Streamlit Cloudを用いた初期プロトタイプ開発後、実務での本格的な運用（本番利用）を見据えた際に、以下の3つの大きな課題に直面しました。</p>
+                        <ul class="styled-list">
+                            <li><strong>起動速度（UX）の課題</strong>：数日間アクセスがないとスリープ状態になり、初回起動に約1分かかるため、ユーザーの自己解決意欲を阻害してしまう。</li>
+                            <li><strong>セキュリティの懸念</strong>：APIキー等の機密情報をパブリックなホスティング環境で扱うリスクを低減し、より強固な分離が必要である。</li>
+                            <li><strong>インフラコストの最適化</strong>：常時起動による無駄なコストを抑え、アクセス数に応じた自動スケール（従量課金）を導入したい。</li>
+                        </ul>
+                        <p>これらの課題を解決するため、フロントエンドを高速な<strong>静的HTML</strong>として配信し、チャットボット本体をサーバーレスコンテナの<strong>Google Cloud (Cloud Run)</strong>で動作させる二層構成（リアーキテクチャ）へと進化させました。下記の表は、その改善内容の比較です。</p>
+                    </div>
                     <div class="table-wrapper">
                         <table class="comparison-table">
                             <thead>
@@ -210,7 +225,7 @@
         </div>
     </div>
 
-    <!-- Modal: Section 3 (PDCA Cycle) -->
+    <!-- モーダル: セクション3 (PDF更新サイクル) -->
     <div id="operation-modal" class="modal">
         <div class="modal-content modal-lg">
             <span class="modal-close">&times;</span>
@@ -221,7 +236,7 @@
                     <img src="img/workflow.svg" alt="業務プロセスフロー図">
                 </div>
                 <div class="operation-steps">
-                    <!-- Step 1 Trigger -->
+                    <!-- ステップ1 トリガー -->
                     <div class="step-card step-card-trigger" data-step-title="1. 【Plan】課題の検知とエスカレーション"
                         data-step-img="img/chat_fail.png"
                         data-step-desc="<strong>【ユーザー視点】</strong><br>・資料にない質問に対し、AIが無理に答えず「回答不可」と正しく判定します。<br>・解決しなかった場合に、チャット画面上に問い合わせフォームへの案内リンクが表示され、ユーザーの具体的な質問をスムーズに収集できます。">
@@ -229,7 +244,7 @@
                         <h4>【Plan】課題の検知とエスカレーション</h4>
                         <p class="click-guide">💡 詳細を表示</p>
                     </div>
-                    <!-- Step 2 Trigger -->
+                    <!-- ステップ2 トリガー -->
                     <div class="step-card step-card-trigger" data-step-title="2. 【Do】現場の声をデータ化"
                         data-step-img="img/form_submit.png"
                         data-step-desc="<strong>【データ収集】</strong><br>・ユーザーがフォームに入力した内容は、Google Forms等を通じてリアルタイムで送信されます。<br>・現場で本当に発生している未解決課題が一元的に可視化されます。">
@@ -237,7 +252,7 @@
                         <h4>【Do】現場の声をデータ化</h4>
                         <p class="click-guide">💡 詳細を表示</p>
                     </div>
-                    <!-- Step 3 Trigger -->
+                    <!-- ステップ3 トリガー -->
                     <div class="step-card step-card-trigger" data-step-title="3. 【Check】未解決問題の分析"
                         data-step-img="img/spreadsheet.png"
                         data-step-desc="<strong>【管理者視点】</strong><br>・問い合わせはスプレッドシートで管理。<br>・管理者は「PDFのどこを追記すべきか」を分析し、プログラム改修なしで対応を検討します。">
@@ -245,7 +260,7 @@
                         <h4>【Check】未解決問題の分析</h4>
                         <p class="click-guide">💡 詳細を表示</p>
                     </div>
-                    <!-- Step 4 Trigger -->
+                    <!-- ステップ4 トリガー -->
                     <div class="step-card step-card-trigger" data-step-title="4. 【Act】PDF更新による課題解決"
                         data-step-img="img/chat_success.png"
                         data-step-desc="<strong>【結果】</strong><br>・管理者がPDFを上書きするだけで、AIが即座に反映。<br>・次回から同じ質問に的確に回答できるようになり、精度が向上します。">
@@ -258,7 +273,7 @@
         </div>
     </div>
 
-    <!-- PDCA Step Detail Modal (Secondary Popup) -->
+    <!-- PDCAステップ詳細モーダル (サブポップアップ) -->
     <div id="pdca-detail-modal" class="modal">
         <!-- PDCAサイクルの各ステップ詳細。情報を整理しやすくするため、一回り大きい modal-lg を適用 -->
         <div class="modal-content modal-lg">
@@ -273,7 +288,7 @@
         </div>
     </div>
 
-    <!-- Profile Modal (Self Introduction & Qualifications Popup) -->
+    <!-- プロファイルモーダル (自己紹介と保有資格ポップアップ) -->
     <div id="profile-modal" class="modal">
         <div class="modal-content profile-modal-content">
             <span id="profile-modal-close" class="modal-close">&times;</span>
@@ -326,7 +341,7 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- フッター -->
     <footer class="footer">
         <div class="container">
             <p>&copy; 2026 Fujio-m. All Rights Reserved. | <a href="https://github.com/" target="_blank">GitHub
@@ -334,7 +349,7 @@
         </div>
     </footer>
 
-    <!-- JavaScript File -->
+    <!-- JavaScriptファイル -->
     <script src="js/main.js"></script>
 </body>
 

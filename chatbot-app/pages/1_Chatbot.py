@@ -154,10 +154,8 @@ def display_feedback_buttons(idx: int) -> Optional[str]:
     st.write("💡 **解決しましたか？**")
 
     if st.button("👍 はい (解決した)", key=f"yes_{idx}"):
-        return "解決しました"
         return FEEDBACK_RESOLVED
     if st.button("👎 いいえ (解決しない)", key=f"no_{idx}"):
-        return "解決してません"
         return FEEDBACK_UNRESOLVED
     return None
 
@@ -177,7 +175,7 @@ def get_pdf_text(pdf_path: str) -> Optional[str]:
         text = ""
         reader = PdfReader(pdf_path)
         for page in reader.pages:
-            text += page.extract_text()
+            text += page.extract_text() + "\n"
         return text
     except Exception as e:
         st.error(f"PDFの解析中にエラーが発生しました:{e}")
@@ -301,7 +299,6 @@ def initialize_session_state():
 def main():
     # 初期設定
     inject_responsive_css()
-    st.set_page_config(page_title="勤怠管理QAボット", layout="wide")
     responsive_title("勤怠管理Q&Aチャットボット")
 
     # システムプロンプトと申請フォームの読み込み
@@ -315,18 +312,6 @@ def main():
     PROMPT = st.session_state.get("system_prompt", "あなたは優秀なアシスタントです。")
     config_data = st.session_state.get("config", {})
     FORM_URL = config_data.get("google_form_url", "")
-
-    # セッション状態の初期化
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
-    if "display_history" not in st.session_state:
-        initial_message =(
-            "こんにちは。 社内規定（勤怠管理）について、どのような情報をお探しでしょうか？\n\n"
-            "お気軽にご質問ください。"
-        )
-        st.session_state.display_history = [
-            {"role": "assistant", "content": initial_message}
-        ]
 
     # 使い方ガイド表示
     guide_text = load_markdown_file(GUIDE_PATH)
