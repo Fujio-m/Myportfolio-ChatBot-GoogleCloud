@@ -1,0 +1,23 @@
+# Python 関連の不要ファイル
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Streamlit のローカル設定 (APIキー漏洩防止)
+.streamlit/secrets.toml
+.streamlit/config.toml
+
+# OS・エディタ関連の不要ファイル
+.git
+.gitignore
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -189,7 +189,21 @@ def get_ai_client() -> genai.Client:
     Returns:
         genai.Client: 初期化済みのAIクライアント。
     """
-    return genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+    # 1. 環境変数 (Docker/Cloud Run用) から取得を試みる
+    api_key = os.environ.get("GEMINI_API_KEY")
+    
+    # 2. なければ Streamlit Secrets (ローカル開発用) から取得を試みる
+    if not api_key:
+        try:
+            api_key = st.secrets["GEMINI_API_KEY"]
+        except Exception:
+            pass
+            
+    if not api_key:
+        st.error("APIキーが見つかりません。環境変数 'GEMINI_API_KEY' または Streamlit Secrets 'GEMINI_API_KEY' を設定してください。")
+        st.stop()
+        
+    return genai.Client(api_key=api_key)
 
 def render_chat_interface() -> Tuple[Optional[str], Optional[str]]:
     """
