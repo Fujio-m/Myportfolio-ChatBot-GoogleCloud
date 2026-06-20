@@ -42,12 +42,14 @@
 
             <div class="hero-actions">
                 <!-- 新アプリ(Cloud Run)のURLが決まりましたら、hrefの値を置き換え、現状はローカルのURL -->
-                <a href="http://localhost:8501" class="btn btn-primary" target="_blank">Chatbotアプリ(Cloud Run)</a>
+                <a href="http://localhost:8501" class="btn btn-primary" target="_blank">Chatbotアプリ(firebase hosting,
+                    Cloud Run)</a>
                 <!-- 旧アプリ(Streamlit Cloud)のURL -->
                 <a href="https://myportfolio-fujio-chatbot.streamlit.app/" class="btn btn-secondary" target="_blank">
                     プロトタイプ版 (Streamlit Cloud)</a>
             </div>
-            <p class="demo-caption">※プロトタイプ（Streamlit Cloud）での起動速度やセキュリティの課題を解消するため、Google Cloud（Cloud Run）による本番構成へ再構築しました。（新アプリは現在Google Cloudへのデプロイを想定して構築中です）</p>
+            <p class="demo-caption">※プロトタイプ（Streamlit Cloud）での起動速度やセキュリティの課題を解消するため、Google Cloud（Cloud
+                Run）による本番構成へ再構築しました。（新アプリは現在Google Cloudへのデプロイを想定して構築中です）</p>
         </section>
 
         <!-- メインセッショングリッド (トリガーカード) -->
@@ -154,11 +156,13 @@
                         <h4>💡 なぜプロトタイプからGoogle Cloud版へ再構築したのか？</h4>
                         <p>Streamlit Cloudを用いた初期プロトタイプ開発後、実務での本格的な運用（本番利用）を見据えた際に、以下の3つの大きな課題に直面しました。</p>
                         <ul class="styled-list">
-                            <li><strong>起動速度（UX）の課題</strong>：数日間アクセスがないとスリープ状態になり、初回起動に約1分かかるため、ユーザーの自己解決意欲を阻害してしまう。</li>
+                            <li><strong>起動速度（UX）の課題</strong>：数日間アクセスがないとスリープ状態になり、初回起動に約1分かかるため、ユーザーの自己解決意欲を阻害してしまう。
+                            </li>
                             <li><strong>セキュリティの懸念</strong>：APIキー等の機密情報をパブリックなホスティング環境で扱うリスクを低減し、より強固な分離が必要である。</li>
                             <li><strong>インフラコストの最適化</strong>：常時起動による無駄なコストを抑え、アクセス数に応じた自動スケール（従量課金）を導入したい。</li>
                         </ul>
-                        <p>これらの課題を解決するため、フロントエンドを高速な<strong>静的HTML</strong>として配信し、チャットボット本体をサーバーレスコンテナの<strong>Google Cloud (Cloud Run)</strong>で動作させる二層構成（リアーキテクチャ）へと進化させました。下記の表は、その改善内容の比較です。</p>
+                        <p>これらの課題を解決するため、フロントエンドを高速な<strong>静的HTML</strong>として配信し、チャットボット本体をサーバーレスコンテナの<strong>Google
+                                Cloud (Cloud Run)</strong>で動作させる二層構成（リアーキテクチャ）へと進化させました。下記の表は、その改善内容の比較です。</p>
                     </div>
                     <div class="table-wrapper">
                         <table class="comparison-table">
