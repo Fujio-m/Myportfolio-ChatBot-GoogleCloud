@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         triggerEl.addEventListener("click", openModal);
         if (closeBtn) closeBtn.addEventListener("click", closeModal);
-        
+
         // モーダルの背景クリックで閉じる
         modal.addEventListener("click", (e) => {
             if (e.target === modal) closeModal();
@@ -37,6 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // 1. 各セクションモーダルのセットアップ
     setupModal("about-trigger", "about-modal");
     setupModal("architecture-trigger", "architecture-modal");
+    setupModal("sequence-trigger", "sequence-modal");
+    setupModal("commitment-trigger", "commitment-modal");
     setupModal("operation-trigger", "operation-modal");
     setupModal("profile-trigger", "profile-modal");
 
