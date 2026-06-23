@@ -1,100 +1,189 @@
-# 勤怠管理Q&Aチャットボット
+﻿# 勤怠管理 AI チャットボット｜ポートフォリオ
 
-Gemini API を活用し、社内規定（PDF）に基づいた正確な回答を生成するQ&Aチャットボットです。
-実務での運用を想定し、「回答精度の可視化」と「PDF更新による継続的な改善サイクル」を意識してこのポートフォリオの開発しました。
+> **Gemini API × RAG** で「就業規則を正確に答える」Q&A チャットボットを開発。
+> ハルシネーション（AI の誤回答）を抑制し、実務運用を想定した PDCA 改善サイクルを組み込んだシステムです。
 
-## URL
- [https://myportfolio-fujio-chatbot.streamlit.app/](https://myportfolio-fujio-chatbot.streamlit.app/)
-* どなたでもブラウザから動作を確認いただけます。
-* レスポンシブデザイン設計のため、モバイル端末でも閲覧できます。
+---
 
-> [注意]
-> ### ℹ️ URLに遷移したときこの画面が出るとき
-> ![初回画面](img/streamlit_sleep_mode.png)
-> - Streamlit Cloud の無料枠を利用しているため、**数日間アクセスがない場合、自動的にスリープ状態**に入ります。
-> - 【対応方法】下記の画面が表示された場合は、**[Yes, get this app back up] ボタン**をクリックしてください。1分ほどでアプリが再起動し、正常に閲覧可能になります。
-> ### ℹ️ データについて
-> - 使用している勤怠管理PDFおよびテストケース（CSV）は、ポートフォリオ公開用に独自に作成した架空のデータです。
-> - 実在の組織や機密情報とは一切関係ありません。
-> ### ℹ️ 実務で使用する場合
-> 企業のセキュリティ要件に適合させるため、以下の構成を推奨しています。
-> - Gemini APIを使用してGeminiに学習されるのを防ぐために「Vertex AI からGemini APIを取得」
-> - 「勤怠ルールPDF」を社外秘にするために、Cloud Storageにて保管
+## プロジェクト概要
 
-## 動作イメージ
-### チャット画面
-![チャット画面](img/chat_sample.png)
+### 開発の背景と目的
+実務における「就業規則の参照コスト削減」および「自己解決率の向上」を目的としたRAG（検索拡張生成）チャットボットです。
+開発者の実務経験（勤怠管理ツールの問い合わせ対応・エスカレーション業務）に基づき、定型的な問い合わせ対応時間（月約3時間相当）の削減と業務自動化を想定して構築しました。
 
-### 精度評価ダッシュボード
-![評価画面](img/dashboard_sample.png)
+### 解決された課題
+- **自己解決率の向上**：従業員が質問を自己解決できる環境を構築。
+- **対応工数の削減**：定型的な問い合わせを自動化し、担当者の対応時間を削減。
+- **メンテナンス負荷の低減**：就業規則の改訂時はPDFを差し替えるだけでよく、プログラム改修を不要に。
 
-## 業務プロセスと改善サイクル
+### 再構築とサービスの選定理由
+当初Streamlitで開発したプロトタイプをベースに、より実務に近い「フロントエンドとバックエンドの分離構成」へと再構築しました。
+- **フロントエンド（Firebase Hosting）**：Google Cloudとの親和性が高く、無料枠で高速なWeb公開が可能。
+- **バックエンド（Cloud Run）**：リクエスト時のみ起動（インスタンス数「0」に縮小）するコンテナ構成で、コスト最適化とスキル実践を実現。
+※プロトタイプ版は [Streamlit Cloud](https://myportfolio-fujio-chatbot.streamlit.app/) でもご確認いただけます。
 
-「AIが回答して終わり」ではなく、解決しなかった質問を申請フォームから送信されることで管理者が修正し、勤怠ルールPDFをアップデートすることで回答精度を継続的に向上させる**PDCA運用サイクル**を想定して設計しています。
+### 達成した成果
+| 指標 | 結果 |
+|:---|:---|
+| 正答率 | **90.0%**（20 件中 18 件合格） |
+| 改善サイクル | プロンプト修正による回答精度向上を実証 |
+| デプロイ構成 | Firebase Hosting + Cloud Run（Dockerコンテナ） |
+| メンテナンス性 | PDFの差し替えのみでルール更新が完結 |
 
-![業務フロー図](assets/workflow.svg)
+---
 
-## セットアップ方法
+## 設計におけるこだわり
 
-ローカル環境で実行する場合は以下の手順に従ってください。
+### 1. ハルシネーションの抑制
+就業規則原本（PDF）から検索した文脈以外の「推測による回答」を禁止するシステムプロンプトを設定しています。答えられない質問には無理に答えず、正しく「回答不可」と判定することで、AIの不正確な回答（ハルシネーション）を防ぎます。
 
-1. リポジトリをクローン
-2. 仮想環境の作成とライブラリのインストール
-   ```bash
-   python -m venv venv　# pythonで反応しない場合は py を使用してください
-   source venv/bin/activate  # Windowsの場合は venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-3. `.streamlit/secrets.toml` を作成し、Gemini APIキーを設定
-4. アプリケーションの起動
-   ```bash
-   streamlit run main.py
-   ```
+### 2. 機密情報の保護
+Gemini APIキー等の認証情報は、機密情報を安全に一元管理する **Google Cloud Secret Manager** に格納。ソースコードや設定ファイルへのハードコードを徹底排除し、漏洩リスクを最小化しています。また、PDF原本自体もコンテナ内の安全なメモリ上に読み込む構成としています。
 
-## 主な機能
-* **RAG 実装**: 勤怠ルールPDFから関連情報を抽出し、根拠に基づいた回答を生成。
-* **精度評価ダッシュボード**: テストケース 20 件による自動評価を行い、合格率を円グラフで可視化。
-* **判定フィルター**: 「不合格」ケースのみを抽出して確認できるデバッグ用インターフェースを実装。
+### 3. 改修不要なメンテフリー設計
+就業規則の改訂時にも、管理者が最新のPDFファイルをアップロードして上書きするだけで、AIの回答根拠が即座に最新化されます。プログラムの修正や再デプロイが不要なため、運用の管理コストを劇的に削減します。
 
-## 精度検証の結果
-今回のプロトタイプにおいて、以下の精度を確認済みです。
-* **正答率**: 90.0% (18/20 ケース合格)
-* **改善対応**: 不合格となった「特殊な休暇申請」等のケースに対し、プロンプトの役割定義を修正することで精度向上を実現。
+---
 
-## 使用技術
-| カテゴリ | 技術 | 採用理由 |
-| :--- | :--- | :--- |
-| 開発言語  | Python 3.13.2 | AIライブラリが豊富なため |
-|  フレームワーク | Streamlit 1.55.0 | 素早く簡易的にAIモデル開発ができるため |
-|  AIモデル | Gemini 2.5 Flash-lite| 無料枠で最新かつ低コストで運用が可能なため |
-|  データ可視化 | Plotly | 動的なグラフが表示可能なため |
-|  データ処理 | Pandas | CSVの統計処理に必要なため |
-|   PDF処理  | PyPDF | PDFテキスト抽出機能に必要なため |
+## 使用技術スタック
+
+| カテゴリ | 技術 | バージョン | 採用理由 |
+|:---|:---|:---|:---|
+| 開発言語 | Python | 3.13.2 | AI ライブラリが豊富なため |
+| フレームワーク | Streamlit | 1.55.0 | 素早く簡易的に AI モデル開発ができるため |
+| AI モデル | Gemini 2.5 Flash-lite | - | 無料枠で最新かつ低コストで運用が可能なため |
+| データ可視化 | Plotly | - | 動的なグラフが表示可能なため |
+| データ処理 | Pandas | - | CSV の統計処理に必要なため |
+| PDF 処理 | PyPDF | - | PDF テキスト抽出機能に必要なため |
+| フロントエンド | HTML / CSS / JavaScript | - | ポートフォリオ紹介サイトの構築 |
+| ホスティング | Firebase Hosting | - | 静的サイトの高速配信 |
+| コンテナ | Docker | - | Cloud Run へのデプロイに使用 |
+| クラウド | Google Cloud Run | - | スケーラブルなコンテナ実行環境 |
+
+
+*本プロジェクトはポートフォリオ用に作成したものです。実際の企業データは使用していません。*
+
+---
 
 ## ディレクトリ構成
 
-```text
-.
-├── main.py                   # アプリのメインエントランス（ナビゲーション定義）
-├── pages/                    # 各機能ページ
-│   ├── 0_Home.py             # ポートフォリオ導入・開発背景
-│   ├── 1_Profile.py          # 自己紹介・スキル
-│   ├── 2_Architecture.py     # システム構成図・技術スタック
-│   ├── 3_Chatbot.py          # AIチャットボット本体（RAG実装）
-│   ├── 4_Evaluation.py       # 精度評価・テストダッシュボード
-│   └── 5_Operation.py        # 運用サイクル（PDF更新フロー）の紹介
-├── assets/                   # 設定・静的リソース
-│   ├── chatbot_sequence.png  # チャットボット機能のデータフロー図
-│   ├── system_prompt.md      # Gemini API用システムプロンプト
-│   ├── usage_guide.md        # ユーザー向け利用ガイド
-│   ├── config.json           # 外部フォームURL等の設定
-│   └── workflow.svg          # 全体の業務フロー図
-├── utils/                    # 共通使用メソッドフォルダ
-│   ├── json_loader.py        # JSONファイルからURL読み込み処理
-│   └── responsive.py         # Webページをレスポンシブデザイン化
-├── data/                     # 参照用ドキュメント
-│   ├── test_cases.csv        # テストケースのCSV
-│   └── kintai_rule.pdf       # 勤怠規定PDF（RAG参照元）
-├── img/                      # スクリーンショットなどの画像
-├── requirements.txt          # Python依存ライブラリ一覧
-└── README.md                 # 本ドキュメント
+```
+Myportfolio-ChatBot-GoogleCloud/
+├── .github/
+│   └── workflows/
+│       ├── firebase-hosting-merge.yml  # Firebase へのデプロイ自動化
+│       └── pytest.yml                  # テスト自動実行
+│
+├── frontend/                           # フロントエンド（ポートフォリオ紹介サイト）
+│   ├── index.html                      # メインページ
+│   ├── css/
+│   │   └── style.css                   # スタイルシート（メイン・レスポンシブ設計）
+│   ├── js/
+│   │   └── main.js                     # インタラクティブ制御（モーダル開閉ロジック等）
+│   └── img/                            # 紹介用スクリーンショット・画像類
+│
+├── chatbot-app/                        # バックエンド（チャットボット・RAG アプリ）
+│   ├── main.py                         # アプリのメインエントランス（ナビゲーション定義）
+│   ├── pages/
+│   │   ├── 1_Chatbot.py                # AI チャットボット本体（RAG 実装）
+│   │   └── 2_Evaluation.py             # 精度評価・テストダッシュボード
+│   ├── utils/
+│   │   ├── json_loader.py              # JSON ファイルから URL 読み込み処理
+│   │   └── responsive.py               # Web ページをレスポンシブデザイン化
+│   ├── data/
+│   │   ├── test_cases.csv              # テストケース CSV
+│   │   └── kintai_rule.pdf             # 勤怠規定 PDF（RAG 参照元）
+│   ├── assets/
+│   │   ├── system_prompt.md            # Gemini API 用システムプロンプト
+│   │   ├── usage_guide.md              # ユーザー向け利用ガイド
+│   │   └── config.json                 # 外部フォーム URL 等の設定
+│   ├── tests/
+│   │   └── test_app.py                 # テストコード
+│   ├── .streamlit/
+│   │   └── secrets.toml                # API キー設定（ローカル用・Git 管理外）
+│   ├── Dockerfile                      # Cloud Run デプロイ用コンテナ定義
+│   └── requirements.txt                # Python 依存ライブラリ一覧
+│
+├── firebase.json                       # Firebase 設定ファイル
+├── .firebaserc                         # Firebase プロジェクト設定
+└── README.md                           # 本ドキュメント
+```
+
+---
+
+## ローカル環境のセットアップ方法
+
+### 1. リポジトリのクローン
+
+```bash
+git clone https://github.com/Fujio-m/Myportfolio-ChatBot-GoogleCloud.git
+cd Myportfolio-ChatBot-GoogleCloud
+```
+
+### 2. バックエンド（チャットボットアプリ）の起動
+
+`chatbot-app` ディレクトリへ移動して実行します。
+
+#### A. ローカルの仮想環境で直接起動する場合
+
+```bash
+cd chatbot-app
+
+# 仮想環境の作成と有効化
+python -m venv venv
+
+# Windows の場合
+venv\Scripts\activate
+
+# macOS / Linux の場合
+source venv/bin/activate
+
+# 依存ライブラリのインストール
+pip install -r requirements.txt
+```
+
+`.streamlit/secrets.toml` を新規作成し、Gemini API キーを設定します。
+
+```toml
+GEMINI_API_KEY = "あなたの API キー"
+```
+
+起動コマンドを実行します。
+
+```bash
+streamlit run main.py
+```
+
+#### B. Docker コンテナとして起動する場合
+
+```bash
+cd chatbot-app
+docker build -t chatbot-app .
+docker run -p 8501:8501 -e GEMINI_API_KEY="あなたの API キー" chatbot-app
+```
+
+### 3. フロントエンド（ポートフォリオ紹介サイト）の起動
+
+Firebase CLI を使用してローカルでホスティング環境をテストできます。
+
+```bash
+# 準備: Node.js と Firebase CLI のインストールが必要です
+npm install -g firebase-tools
+
+# ログインとテスト起動
+firebase login
+firebase serve --only hosting
+```
+
+起動後、ブラウザで `http://localhost:5000` にアクセスするとポートフォリオサイトを確認できます。
+
+---
+
+## 精度検証の結果
+
+今回のプロトタイプにおいて、以下の精度を確認済みです。
+
+- **正答率**: 90.0%（20 件中 18 件合格）
+- **改善実績**: 不合格となった「特殊な休暇申請」等のケースに対し、システムプロンプトの役割定義を修正することで精度向上を実現
+
+---
