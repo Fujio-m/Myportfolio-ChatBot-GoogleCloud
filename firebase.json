@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "fujio-m-portfolio",
     "public": "frontend",
     "ignore": [
       "firebase.json",
