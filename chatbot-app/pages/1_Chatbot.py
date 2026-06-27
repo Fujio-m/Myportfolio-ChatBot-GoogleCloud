@@ -1,16 +1,16 @@
 import os
 import json
+import re
 from typing import Optional, Tuple, Dict, Any
 import streamlit as st
-from google import genai
 from google.genai import types
 from pathlib import Path
-from pypdf import PdfReader
 from streamlit_pdf_viewer import pdf_viewer
 from utils.responsive import inject_responsive_css, responsive_title, responsive_header
+from utils.rag_service import get_rag_service
 
 
-# 3_Chatbot.py - - RAG & チャットUI
+# 1_Chatbot.py - - RAG & チャットUI
 #
 #【設計意図】
 # 1. RAG実装:
@@ -23,12 +23,12 @@ from utils.responsive import inject_responsive_css, responsive_title, responsive
 # --- 定数定義 ---
 PDF_PATH = "data/kintai_rule.pdf"
 GUIDE_PATH = "assets/usage_guide.md"
-GEMINI_MODEL = "gemini-2.5-flash-lite"
+GEMINI_MODEL = "gemini-3.1-flash-lite"
 
 FEEDBACK_RESOLVED = "解決しました"
 FEEDBACK_UNRESOLVED = "解決してません"
 
-# ---  メソッド定義 (UIパーツ) ---
+# ---  チャットボットアプリの初期設定 ---
 def load_app_settings() -> Tuple[str, Dict[str, Any]]:
     """
     外部ファイルからシステムプロンプトとアプリケーション設定を読み込む。
@@ -56,7 +56,7 @@ def load_app_settings() -> Tuple[str, Dict[str, Any]]:
     
     except FileNotFoundError as e:
         st.error(f"設定ファイルが見つかりません: {e.filename}")
-        st.stop() # アプリの実行を安全に停止
+        st.stop()
     except json.JSONDecodeError:
         st.error("config.json の形式が正しくありません。")
         st.stop()
@@ -81,10 +81,15 @@ def show_pdf_dialog(pdf_path: str):
         with open(pdf_path, "rb") as f:
             pdf_bytes = f.read()
 
-        st.write("AIの回答根拠となる規定の原本PDFです")
-
-        # PDFの表示
-        pdf_viewer(input=pdf_bytes)
+        page = st.session_state.get("pdf_page", None)
+        if page:
+            st.write(f"AIの回答根拠となる規定の原本PDF (P.{page}) です")
+            # 該当ページのみを表示
+            pdf_viewer(input=pdf_bytes, pages_to_render=[page])
+        else:
+            st.write("AIの回答根拠となる規定の原本PDFです")
+            # PDF全体を表示
+            pdf_viewer(input=pdf_bytes)
 
     except Exception as e:
         st.error(f"PDFの表示中にエラーが発生しました: {e}")
@@ -101,6 +106,7 @@ def display_sidebar_pdf_trigger(pdf_path: str):
         st.subheader("📚 エビデンス確認")
         st.info("AI回答の根拠となっている社内規定の原本PDFを確認できます")
         if st.button("📄 PDF原本を開く", width="stretch"):
+            st.session_state.pdf_page = None  # ページ指定をクリアして全体を表示
             show_pdf_dialog(pdf_path)
 
 @st.cache_data
@@ -129,16 +135,17 @@ def display_faq_buttons() -> Optional[str]:
         str: ユーザーがクリックしたボタンに対応する質問テキスト。クリックがない場合はNone。
     """
     st.caption("💡 よくある質問例：")
-    # 縦に並べる。keyを固定することで、再実行されてもボタンの状態が維持されます。
+    # 縦に並べる。keyを固定することで、再実行されてもボタンの状態を維持
+    selected_question = None
     if st.button("🕒 時差出勤の昼休憩の時間は？", key="btn_faq_1"):
-        return "時差出勤の昼休憩の時間は？"
+        selected_question = "時差出勤の昼休憩の時間は？"
     if st.button("📝 時差出勤の申請ルール", key="btn_faq_2"):
-        return "時差出勤のルールは？"
+        selected_question = "時差出勤のルールは？"
     if st.button("🆘 急に休みたくなった時は？", key="btn_faq_3"):
-        return "急に休みたくなった時は？"
+        selected_question = "急に休みたくなった時は？"
     if st.button("🚃 電車が遅延した場合は？", key="btn_faq_4"):
-        return "電車が遅延した場合は？"
-    return None
+        selected_question = "電車が遅延した場合は？"
+    return selected_question
 
 def display_feedback_buttons(idx: int) -> Optional[str]:
     """
@@ -153,61 +160,25 @@ def display_feedback_buttons(idx: int) -> Optional[str]:
     st.divider()
     st.write("💡 **解決しましたか？**")
 
+    selected_feedback = None
     if st.button("👍 はい (解決した)", key=f"yes_{idx}"):
-        return FEEDBACK_RESOLVED
+        selected_feedback = FEEDBACK_RESOLVED
     if st.button("👎 いいえ (解決しない)", key=f"no_{idx}"):
-        return FEEDBACK_UNRESOLVED
-    return None
+        selected_feedback = FEEDBACK_UNRESOLVED
+    return selected_feedback
 
-# --- メソッド定義 (データ処理・API) ---
-@st.cache_resource
-def get_pdf_text(pdf_path: str) -> Optional[str]:
+# ---  メソッド定義 (UIパーツ) ---
+
+def render_chat_interface(rag_service) -> Tuple[Optional[str], Optional[str]]:
     """
-    PDFファイルから全テキストを抽出し、Streamlitのリソースキャッシュに保存する。
+    現在のチャット履歴を読み取り、メッセージ・FAQボタン・フィードバックボタン・
+    PDFページジャンプボタンをまとめて表示する。
+
+    AIの回答にページ番号の引用（例: P.2参照）が含まれる場合は、
+    その数をもとにPDFダイアログ起動ボタンを動的に生成する。
 
     Args:
-        pdf_path (str): 読み込み対象のPDFファイルパス。
-
-    Returns:
-        str: 抽出されたテキスト。失敗した場合はNone。
-    """
-    try:
-        text = ""
-        reader = PdfReader(pdf_path)
-        for page in reader.pages:
-            text += page.extract_text() + "\n"
-        return text
-    except Exception as e:
-        st.error(f"PDFの解析中にエラーが発生しました:{e}")
-        return None
-
-@st.cache_resource
-def get_ai_client() -> genai.Client:
-    """
-    Google Gen AI クライアントを初期化し、キャッシュとして保持する。
-
-    Returns:
-        genai.Client: 初期化済みのAIクライアント。
-    """
-    # 1. 環境変数 (Docker/Cloud Run用) から取得を試みる
-    api_key = os.environ.get("GEMINI_API_KEY")
-    
-    # 2. なければ Streamlit Secrets (ローカル開発用) から取得を試みる
-    if not api_key:
-        try:
-            api_key = st.secrets["GEMINI_API_KEY"]
-        except Exception:
-            pass
-            
-    if not api_key:
-        st.error("APIキーが見つかりません。環境変数 'GEMINI_API_KEY' または Streamlit Secrets 'GEMINI_API_KEY' を設定してください。")
-        st.stop()
-        
-    return genai.Client(api_key=api_key)
-
-def render_chat_interface() -> Tuple[Optional[str], Optional[str]]:
-    """
-    現在のチャット履歴に基づき、メッセージおよびUIコンポーネントを画面に描画する。
+        rag_service (RAGChatService): PDFのページ数上限を参照するためのサービスインスタンス。
 
     Returns:
         tuple: (selected_question, feedback_selection)
@@ -220,6 +191,28 @@ def render_chat_interface() -> Tuple[Optional[str], Optional[str]]:
     for i, msg in enumerate(st.session_state.display_history):
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
+
+            # アシスタントの回答からページ参照ボタンを生成
+            if msg["role"] == "assistant":
+                # 表記揺れに対応した正規表現で全マッチを取得
+                matches = re.finditer(r"[\(（][Pp]\.?\s*(\d+)\s*(?:ページ)?(?:参照)?[\)）]", msg["content"])
+                pages = []
+                max_pages = rag_service.max_pages
+                for m in matches:
+                    page_num = int(m.group(1))
+                    # 存在するページ範囲内のみをリストに追加（重複排除）
+                    if 1 <= page_num <= max_pages and page_num not in pages:
+                        pages.append(page_num)
+
+                if pages:
+                    # 複数ページある場合は横並び（カラム）でボタンを表示
+                    cols = st.columns(len(pages))
+                    for col_idx, page_num in enumerate(pages):
+                        with cols[col_idx]:
+                            if st.button(f"📄 根拠ページ (P.{page_num}) へ飛ぶ", key=f"btn_pdf_{i}_{page_num}"):
+                                st.session_state.pdf_page = page_num
+                                st.session_state.show_pdf_dialog_trigger = True
+                                st.rerun()
 
             # 最初のみFAQボタンを表示
             if i == 0:
@@ -254,48 +247,7 @@ def handle_feedback(final_prompt: str, form_url: str) -> str:
         st.info(msg)
     return msg
 
-def get_gemini_answer(client: genai.Client, final_prompt: str, pdf_content: str, base_instruction: str) -> Optional[str]:
-    """
-    Gemini APIを呼び出し、PDFの内容に基づいたRAG（検索拡張生成）回答を取得する。
-
-    Args:
-        client (genai.Client): AIクライアントインスタンス。
-        final_prompt (str): ユーザーの質問内容。
-        pdf_content (str): 参照元となるPDFのテキスト。
-        base_instruction (str): システムプロンプトのテンプレート。
-
-    Returns:
-        str: 生成されたAIの回答テキスト。エラー時はNoneを返す。
-    """
-    # システムプロンプトにPDF内容を埋め込み
-    final_instruction = base_instruction.replace("{{PDF_CONTENT}}", pdf_content)
-
-    try:
-        response = client.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=st.session_state.chat_history + [final_prompt], # 履歴 + 今回の質問
-            config=types.GenerateContentConfig(
-                system_instruction=final_instruction,
-                temperature=0.1,
-            )
-        )
-        return response.text
-    except Exception as e:
-        if "429" in str(e):
-            st.warning("⚠️ API制限がかかりました。1分ほど待ってから再度お試しください。")
-        elif "503" in str(e):
-            st.error("☁️ 現在Googleのサーバーが大変混み合っています。少し時間をおいてから再度お試しください。")
-        elif "400" in str(e):
-            st.error("⚠️ 送信データに不備があります（二重送信や空のデータ）。一度ページをリロードして再度お試しください。")
-        error_msg = str(e)
-        if "429" in error_msg:
-            st.warning("⚠️ 混雑しています。少し待ってから再度お試しください。")
-        elif "503" in error_msg:
-            st.error("☁️ サーバーが一時的に不安定です。")
-        else:
-            st.error(f"エラーが発生しました: {e}")
-            st.error(f"予期せぬエラー: {error_msg}")
-        return None
+# --- メソッド定義 (データ処理・API) ---
 
 def initialize_session_state():
     """セッション状態の初期化を集約"""
@@ -309,6 +261,10 @@ def initialize_session_state():
         st.session_state.display_history = [{"role": "assistant", "content": initial_message}]
     if "feedback_done" not in st.session_state:
         st.session_state.feedback_done = False
+    if "pdf_page" not in st.session_state:
+        st.session_state.pdf_page = None
+    if "show_pdf_dialog_trigger" not in st.session_state:
+        st.session_state.show_pdf_dialog_trigger = False
 
 def main():
     # 初期設定
@@ -338,20 +294,24 @@ def main():
         st.error(f"ファイルが見つかりません: {PDF_PATH}")
         return # 処理を中断
 
+    # RAGサービスの取得（キャッシュ対応）
+    rag_service = get_rag_service(PDF_PATH, GEMINI_MODEL)
+
     # PDFからテキスト抽出チェック
-    pdf_content = get_pdf_text(PDF_PATH)
-    if pdf_content is None:
+    if rag_service.pdf_content is None:
         st.error("規定PDFの読み込みに失敗しました。ファイルが破損しているか、画像のみの可能性があります。")
         return
+
+    # ダイアログ表示のトリガーチェック
+    if st.session_state.get("show_pdf_dialog_trigger", False):
+        st.session_state.show_pdf_dialog_trigger = False
+        show_pdf_dialog(PDF_PATH)
 
     # --- サイドバーに原本確認ボタンを設置 ---
     display_sidebar_pdf_trigger(PDF_PATH)
 
-    # --- インターフェース制御 ---
-    client = get_ai_client()
-
     # --- チャット画面の表示とボタン選択の取得 ---
-    selected_question, feedback_selection = render_chat_interface()
+    selected_question, feedback_selection = render_chat_interface(rag_service)
 
     # --- 入力プロンプトの統合と優先順位決定 ---
     chat_prompt = st.chat_input("勤怠について質問してください")
@@ -379,7 +339,7 @@ def main():
         else:
             with st.chat_message("assistant"):
                 with st.spinner("AIが規定を確認しています..."):
-                    ans_text = get_gemini_answer(client, final_prompt, pdf_content, PROMPT)
+                    ans_text = rag_service.get_gemini_answer(final_prompt, st.session_state.chat_history, PROMPT)
 
                     if ans_text:
                         st.markdown(ans_text)

@@ -5,7 +5,7 @@ import os
 from utils.responsive import inject_responsive_css, responsive_title, responsive_header
 
 
-# 4_Evaluation.py - 精度評価とテストケース
+# 2_Evaluation.py - 精度評価とテストケース
 #
 # 【設計意図】
 # RAGシステムの「回答品質」を客観的に評価するためのテストデータと結果を提示。
