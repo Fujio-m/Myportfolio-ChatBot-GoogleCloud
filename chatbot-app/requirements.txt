@@ -4,4 +4,3 @@ pandas==2.3.3
 plotly==6.6.0
 pypdf==6.9.2
 streamlit-pdf-viewer==0.0.28
-python-dotenv

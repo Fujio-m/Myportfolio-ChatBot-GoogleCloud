@@ -116,9 +116,8 @@ class RAGChatService:
         Gemini APIにリクエストを送信し、AIの回答テキストを返す。
 
         503(サーバー過負荷)・429(レート制限)エラーが発生した場合は
-        指数バックオフ(1秒→2秒→4秒)で最大3回まで自動リトライする。
-        リトライ中はst.toastで進捗をユーザーに通知し、
-        全試行が失敗した場合のみエラーメッセージを表示する。
+        指数バックオフ(1秒→2秒)で最大3回まで自動リトライする。
+        全試行が失敗した場合のみエラーメッセージを1件表示する。
 
         Args:
             final_prompt (str): ユーザーの入力テキスト。
@@ -154,12 +153,11 @@ class RAGChatService:
                 # ── リトライ可能なエラー（503・429）────────────────────
                 if any(code in error_msg for code in RETRYABLE_ERRORS):
                     if not is_last_attempt:
-                        wait_seconds = 2 ** attempt  # 1秒 → 2秒 → 4秒（指数バックオフ）
-                        st.toast(f"⏳ サーバーが混み合っています。{wait_seconds}秒後に再試行します... ({attempt + 1}/{MAX_RETRIES - 1}回目)")
+                        wait_seconds = 2 ** attempt  # 1秒 → 2秒（指数バックオフ）
                         time.sleep(wait_seconds)
-                        continue  # リトライ
+                        continue  # リトライ（メッセージはスピナー側で一元管理）
                     else:
-                        # 全試行失敗時のみエラーを表示
+                        # 全試行失敗時のみ1件だけエラーを表示
                         if "503" in error_msg:
                             st.error("☁️ Googleのサーバーが大変混み合っています。しばらく待ってから再度お試しください。")
                         else:

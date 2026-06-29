@@ -1,13 +1,12 @@
 import os
-import json
 import re
-from typing import Optional, Tuple, Dict, Any
+from typing import Optional, Tuple
 import streamlit as st
 from google.genai import types
-from pathlib import Path
 from streamlit_pdf_viewer import pdf_viewer
-from utils.responsive import inject_responsive_css, responsive_title, responsive_header
+from utils.responsive import inject_responsive_css, responsive_title
 from utils.rag_service import get_rag_service
+from utils.json_loader import get_form_url
 
 
 # 1_Chatbot.py - - RAG & チャットUI
@@ -29,36 +28,22 @@ FEEDBACK_RESOLVED = "解決しました"
 FEEDBACK_UNRESOLVED = "解決してません"
 
 # ---  チャットボットアプリの初期設定 ---
-def load_app_settings() -> Tuple[str, Dict[str, Any]]:
+def load_system_prompt() -> str:
     """
-    外部ファイルからシステムプロンプトとアプリケーション設定を読み込む。
+    外部ファイルからシステムプロンプトを読み込む。
+    config.json の読み込みは utils.json_loader に委譲。
 
     Returns:
-        tuple: (load_instruction, config)
-            - load_instruction (str): AIの振る舞いを定義するシステムプロンプト。
-            - config (dict): 問い合わせフォームのURL等を含む設定データ。
+        str: AIの振る舞いを定義するシステムプロンプト。
 
     Raises:
-        FileNotFoundError: 設定ファイルが存在しない場合。
-        json.JSONDecodeError: JSONの構文エラーがある場合。
+        FileNotFoundError: プロンプトファイルが存在しない場合。
     """
     try:
-        # プロンプトの読み込み
-        prompt_path = Path("assets/system_prompt.md")
-        load_instruction = prompt_path.read_text(encoding="utf-8")
-
-        # 申請フォームの設定の読み込み
-        config_path = Path("assets/config.json")
-        with open(config_path, "r", encoding="utf-8") as f:
-            config = json.load(f)
-
-        return load_instruction, config
-    
+        with open("assets/system_prompt.md", "r", encoding="utf-8") as f:
+            return f.read()
     except FileNotFoundError as e:
         st.error(f"設定ファイルが見つかりません: {e.filename}")
-        st.stop()
-    except json.JSONDecodeError:
-        st.error("config.json の形式が正しくありません。")
         st.stop()
     except Exception as e:
         st.error(f"予期せぬエラーが発生しました: {e}")
@@ -274,14 +259,11 @@ def main():
     # システムプロンプトと申請フォームの読み込み
     initialize_session_state()
 
-    if "config" not in st.session_state or "system_prompt" not in st.session_state:
-        load_instruction, config = load_app_settings()
-        st.session_state.system_prompt = load_instruction
-        st.session_state.config = config
+    if "system_prompt" not in st.session_state:
+        st.session_state.system_prompt = load_system_prompt()
 
     PROMPT = st.session_state.get("system_prompt", "あなたは優秀なアシスタントです。")
-    config_data = st.session_state.get("config", {})
-    FORM_URL = config_data.get("google_form_url", "")
+    FORM_URL = get_form_url()
 
     # 使い方ガイド表示
     guide_text = load_markdown_file(GUIDE_PATH)
