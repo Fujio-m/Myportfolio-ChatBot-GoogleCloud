@@ -6,7 +6,7 @@
 ## 🔗 デプロイ先リンク
 
 - **ポートフォリオ紹介サイト（フロントエンド）**: [https://fujio-m-portfolio.web.app](https://fujio-m-portfolio.web.app)
-- **勤怠管理Q&Aチャットボットアプリ（バックエンド）**: [https://chatbot-app-70601432783.us-central1.run.app](https://chatbot-app-70601432783.us-central1.run.app)
+- **勤怠ルールQ&Aチャットボットアプリ（バックエンド）**: [https://chatbot-app-70601432783.us-central1.run.app](https://chatbot-app-70601432783.us-central1.run.app)
 
 ---
 
