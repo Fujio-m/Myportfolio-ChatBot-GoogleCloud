@@ -30,7 +30,7 @@ def test_chatbot_page_load():
     # 特定の要素（タイトル文言）が正しく含まれているか確認
     title_found = False
     for md in at.markdown:
-        if "勤怠管理Q&Aチャットボット" in md.value:
+        if "勤怠ルールQ&Aチャットボット" in md.value:
             title_found = True
             break
     assert title_found, "タイトルが表示されていません"
