@@ -14,6 +14,10 @@ pip-delete-this-directory.txt
 .streamlit/secrets.toml
 .streamlit/config.toml
 
+# テスト関連の不要ファイル
+tests/
+.pytest_cache/
+
 # OS・エディタ関連の不要ファイル
 .git
 .gitignore
