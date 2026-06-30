@@ -1,0 +1,46 @@
+name: Deploy to Cloud Run on merge
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'chatbot-app/**'
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. リポジトリをチェックアウト
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Google Cloud に認証
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      # 3. gcloud CLI のセットアップ
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      # 4. Artifact Registry への Docker 認証
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+
+      # 5. Docker イメージのビルド & プッシュ
+      - name: Build and push Docker image
+        run: |
+          docker build -t us-central1-docker.pkg.dev/fujio-m-portfolio/chatbot-repo/chatbot-app:latest ./chatbot-app
+          docker push us-central1-docker.pkg.dev/fujio-m-portfolio/chatbot-repo/chatbot-app:latest
+
+      # 6. Cloud Run へデプロイ
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy chatbot-app \
+            --image us-central1-docker.pkg.dev/fujio-m-portfolio/chatbot-repo/chatbot-app:latest \
+            --platform managed \
+            --region us-central1 \
+            --quiet
