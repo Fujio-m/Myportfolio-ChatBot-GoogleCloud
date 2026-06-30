@@ -58,9 +58,9 @@
 
             <!-- トリガー2: 構成図と技術スタック -->
             <section id="architecture-trigger" class="card section-trigger-card">
-                <h2 class="section-title">システム構成図</h2>
-                <p>・システム設計と構成図</p>
-                <p>・技術スタックと選定理由</p>
+                <h2 class="section-title">アーキテクチャ</h2>
+                <p>・技術スタックとアーキテクチャ</p>
+                <p>・設計におけるこだわり</p>
                 <div class="click-guide">詳細を表示する →</div>
             </section>
 
@@ -152,11 +152,11 @@
         </div>
     </div>
 
-    <!-- モーダル: セクション2 (システム構成図と技術スタック) -->
+    <!-- モーダル: セクション2 (アーキテクチャと技術スタック) -->
     <div id="architecture-modal" class="modal">
         <div class="modal-content modal-lg">
             <span class="modal-close">&times;</span>
-            <h2 class="modal-header-title">システム構成図 &amp; 技術スタック</h2>
+            <h2 class="modal-header-title">アーキテクチャ &amp; 技術スタック</h2>
             <div class="modal-body">
                 <div>
                     <h3 style="margin-bottom: 12px;">技術スタック</h3>
@@ -166,24 +166,39 @@
                                 <tr>
                                     <th style="width: 20%;">分類</th>
                                     <th style="width: 30%;">技術</th>
-                                    <th>選定理由</th>
+                                    <th>採用理由</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="table-category">開発言語</td>
-                                    <td>Python 3.13.2 / HTML / JS</td>
-                                    <td>AI開発用ライブラリが豊富なPythonをバックエンドとし、フロントエンドを高速な静的HTML・JSで構成してUX向上を図るため</td>
+                                    <td class="table-category">開発言語 / UI</td>
+                                    <td>Python 3.11 / Streamlit</td>
+                                    <td>豊富なAIライブラリを活用し、迅速にプロトタイプを作成できるため</td>
                                 </tr>
                                 <tr>
                                     <td class="table-category">AIモデル</td>
-                                    <td>Gemini 2.5 Flash-lite</td>
-                                    <td>低コストかつ高速でありながら、就業規則PDFなどの長文コンテキスト入力に対応し、正確な推論が可能なため</td>
+                                    <td>Gemini 3.1 Flash-lite</td>
+                                    <td>Google AI StudioにてAPIキーが無料で発行でき、低コストかつ高速なため</td>
+                                </tr>
+                                <tr>
+                                    <td class="table-category">コンテナ</td>
+                                    <td>Docker</td>
+                                    <td>Cloud Run上でデプロイに必要、ローカルと本番環境の差異をなくすため</td>
                                 </tr>
                                 <tr>
                                     <td class="table-category">インフラ</td>
-                                    <td>Cloud Run / Secret Manager</td>
-                                    <td>リクエストに応じた自動スケール（従量課金）によるコスト最適化と、APIキーなどの機密情報を安全に一元管理するため</td>
+                                    <td>Cloud Run</td>
+                                    <td>未使用時は自動でサーバー数を「0」に縮小し、個人開発の無料枠を最大活用するため</td>
+                                </tr>
+                                <tr>
+                                    <td class="table-category">セキュリティ</td>
+                                    <td>Secret Manager</td>
+                                    <td>APIキーなどの機密情報を安全に暗号化管理するため</td>
+                                </tr>
+                                <tr>
+                                    <td class="table-category">ホスティング</td>
+                                    <td>Firebase Hosting</td>
+                                    <td>ポートフォリオ紹介用の静的Webサイトを、高速かつ無料で安全に公開できるため</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -194,18 +209,105 @@
 
                 <div id="sequence-trigger" class="sequence-trigger-box">
                     <div class="trigger-left">
-                        <h3>チャットボットアプリの流れ (シーケンス図)</h3>
-                        <p class="trigger-subtitle">クリックすると、初期化・対話プロセスの詳細解説とシーケンス図を表示します</p>
+                        <h3>アプリケーション全体のデータフロー</h3>
+                        <p class="trigger-subtitle">アプリケーション全体のデータフローと詳細な解説を表示します</p>
                     </div>
                     <div class="click-guide">詳細を表示 →</div>
                 </div>
                 <div id="commitment-trigger" class="sequence-trigger-box">
                     <div class="trigger-left">
                         <h3>設計におけるこだわり</h3>
-                        <p class="trigger-subtitle">ハルシネーションの抑制、機密情報の保護、プログラム改修不要なメンテナンス性を重視した設計ディテール。</p>
+                        <p class="trigger-subtitle">ハルシネーション防止・機密情報保護・PDCAサイクル・コスト設計の4つの観点から技術的こだわりを解説します。</p>
                     </div>
                     <div class="click-guide">詳細を表示 →</div>
                 </div>
+
+                <!-- コスト最適化アコーディオン -->
+                <details class="cost-optimization-details"
+                    style="margin-top: 15px; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; background-color: rgba(255, 255, 255, 0.01);">
+                    <summary
+                        style="font-weight: 600; cursor: pointer; color: var(--primary); display: flex; align-items: center; justify-content: space-between; list-style: none; user-select: none;">
+                        <span>コスト最適化設計（無料枠の徹底活用）の詳細を確認する</span>
+                        <span class="accordion-icon" style="font-size: 0.8rem; opacity: 0.7;">▼ クリックで展開</span>
+                    </summary>
+                    <div class="table-wrapper"
+                        style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                        <table class="stack-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%;">サービス名</th>
+                                    <th style="width: 40%;">毎月の無料枠</th>
+                                    <th>設定状態 / コスト対策</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="table-category">Cloud Run</td>
+                                    <td>
+                                        <ul style="margin: 0; padding-left: 18px; line-height: 1.5;">
+                                            <li>200万 リクエスト</li>
+                                            <li>18万 vCPU 秒</li>
+                                            <li>36万 GB 秒</li>
+                                            <li>ネットワーク送信量 1GB（北米限定）</li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul style="margin: 0; padding-left: 18px; line-height: 1.5;">
+                                            <li>最大インスタンス数を「3」に制限</li>
+                                            <li>未使用時は「0」まで自動縮小</li>
+                                            <li>送信量無料化のため北米リージョンを選択</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="table-category">Artifact Registry</td>
+                                    <td>
+                                        <ul style="margin: 0; padding-left: 18px; line-height: 1.5;">
+                                            <li>0.5 GB ストレージ</li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul style="margin: 0; padding-left: 18px; line-height: 1.5;">
+                                            <li>クリーンアップポリシーを設定</li>
+                                            <li>タグなし（古いビルド）イメージを自動削除</li>
+                                            <li>容量を常に最小に抑え、無料枠を維持</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="table-category">Secret Manager</td>
+                                    <td>
+                                        <ul style="margin: 0; padding-left: 18px; line-height: 1.5;">
+                                            <li>6つのアクティブなシークレット</li>
+                                            <li>1万 アクセス操作</li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul style="margin: 0; padding-left: 18px; line-height: 1.5;">
+                                            <li>APIキーを1個のみ安全に格納</li>
+                                            <li>アクセスはコンテナ起動時のみに抑制</li>
+                                            <li>APIアクセス数および管理コストを0円に維持</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="table-category">Firebase Hosting</td>
+                                    <td>
+                                        <ul style="margin: 0; padding-left: 18px; line-height: 1.5;">
+                                            <li>10 GB ストレージ</li>
+                                            <li>10 GB データ転送</li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul style="margin: 0; padding-left: 18px; line-height: 1.5;">
+                                            <li>Hostingの無料枠内で高速・追加コストなしでデプロイ可能</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </details>
             </div>
         </div>
     </div>
@@ -262,21 +364,22 @@
     <div id="sequence-modal" class="modal">
         <div class="modal-content modal-lg">
             <span class="modal-close">&times;</span>
-            <h2 class="modal-header-title">チャットボットアプリの流れ (シーケンス図)</h2>
+            <h2 class="modal-header-title">アプリケーション全体のデータフロー</h2>
             <div class="modal-body">
                 <div class="img-wrapper">
-                    <img src="img/chatbot_sequence.png" alt="チャットボットシーケンス図">
+                    <img src="img/sequence.png" alt="アプリケーションのデータフロー">
                 </div>
                 <div class="grid-2">
                     <div class="feature-box-small">
                         <h4>1. 初期化プロセス（安全な起動準備）</h4>
-                        <p>アプリが起動した際、セキュリティを考慮し環境変数やSecrets設定ファイルから安全にAPI認証情報を読み込みます。その後、就業規則PDFからテキストデータを抽出し、検索用メモリ空間を確保します。
-                        </p>
+                        <p><strong>Cloud Run</strong> 上のアプリが起動する際、機密情報はソースコードに持たさず、<strong>Secret Manager</strong>
+                            から安全にAPIキーを取得します。</p>
+                        <p>その後、RAG検索用に就業規則PDFからテキストデータを抽出します。</p>
                     </div>
                     <div class="feature-box-small">
                         <h4>2. 対話プロセス（ユーザーとの対話フロー）</h4>
-                        <p>ユーザーが質問を入力すると、その質問内容とPDFテキストを組み合わせてシステムプロンプトに注入します。<strong>Gemini 2.5
-                                Flash-lite</strong>モデルに送り、コンテキストに基づいた厳格な回答をUIに表示します。</p>
+                        <p>ユーザーが質問を入力すると、その質問内容とメモリ内のPDFテキストを結合し、専用のシステムプロンプトを構築します。</p>
+                        <p>これを <strong>Gemini API</strong>に送信することで、社内規定に沿った回答を生成します。</p>
                     </div>
                 </div>
             </div>
@@ -289,24 +392,32 @@
             <span class="modal-close">&times;</span>
             <h2 class="modal-header-title">設計におけるこだわり</h2>
             <div class="modal-body">
-                <div class="grid-3" style="margin-top: 10px;">
+                <div class="grid-2" style="margin-top: 10px;">
                     <div class="feature-box-small">
-                        <h4 class="commitment-item-title">1. ハルシネーションの抑制</h4>
+                        <h4 class="commitment-item-title">1. ハルシネーション防止の徹底</h4>
                         <p class="commitment-item-desc">
-                            就業規則原本（PDF）から検索した文脈以外の「推測による回答」を禁止するシステムプロンプトを設定しています。答えられない質問には無理に答えず、正しく「回答不可」と判定することで、AIの不正確な回答（ハルシネーション）を防ぎます。
+                            就業規則PDF以外の「推測による回答」を禁じるシステムプロンプトを設定。回答できない質問には「回答不可」と明示させることで、AIのハルシネーションの防止を徹底しました。
                         </p>
                     </div>
                     <div class="feature-box-small">
                         <h4 class="commitment-item-title">2. 機密情報の保護</h4>
                         <p class="commitment-item-desc">
-                            Gemini APIキー等の認証情報は、機密情報を安全に一元管理する <strong>Google Cloud Secret Manager</strong>
-                            に格納。ソースコードや設定ファイルへのハードコードを徹底排除し、漏洩リスクを最小化しています。また、PDF原本自体もコンテナ内の安全なメモリ上に読み込む構成としています。
+                            Gemini APIキー等の認証情報は <strong>Secret Manager</strong>
+                            で一元管理し、ソースコードへのハードコードを徹底排除しています。PDF原本もコンテナ内のメモリ上に配置し、外部露出を防ぐ設計にしました。
                         </p>
                     </div>
                     <div class="feature-box-small">
-                        <h4 class="commitment-item-title">3. 改修不要なメンテフリー設計</h4>
+                        <h4 class="commitment-item-title">3. PDF更新によるPDCAサイクル</h4>
                         <p class="commitment-item-desc">
-                            就業規則の改訂時にも、管理者が最新のPDFファイルをアップロードして上書きするだけで、AIの回答根拠が即座に最新化されます。プログラムの修正や再デプロイが不要なため、運用の管理コストを劇的に削減します。
+                            就業規則の改訂時は管理者がPDFを差し替えるだけでAIの回答が即座に最新化される設計にしました。
+                            プログラムの修正や再デプロイが不要なPDCA改善サイクルを低コストで回せるようにしました。
+                        </p>
+                    </div>
+                    <div class="feature-box-small">
+                        <h4 class="commitment-item-title">4. ポートフォリオ全体のコスト運用</h4>
+                        <p class="commitment-item-desc">
+                            Cloud Run・Firebase Hosting・Secret Manager・Artifact
+                            Registryの各サービスを無料枠の範囲内で運用できるよう設計。北米リージョン(us-central1)選択やインスタンスの自動縮小など、コストを意識した構成を徹底しています。
                         </p>
                     </div>
                 </div>

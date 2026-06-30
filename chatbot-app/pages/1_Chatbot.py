@@ -88,7 +88,7 @@ def display_sidebar_pdf_trigger(pdf_path: str):
     """
     with st.sidebar:
         st.divider()
-        st.subheader("📚 エビデンス確認")
+        st.subheader("📚 勤怠ルールPDF原本")
         st.info("AI回答の根拠となっている社内規定の原本PDFを確認できます")
         if st.button("📄 PDF原本を開く", width="stretch"):
             st.session_state.pdf_page = None  # ページ指定をクリアして全体を表示
@@ -254,7 +254,7 @@ def initialize_session_state():
 def main():
     # 初期設定
     inject_responsive_css()
-    responsive_title("勤怠管理Q&Aチャットボット")
+    responsive_title("勤怠ルールQ&Aチャットボット")
 
     # システムプロンプトと申請フォームの読み込み
     initialize_session_state()
