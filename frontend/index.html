@@ -35,14 +35,50 @@
     <!-- メインコンテンツコンテナ (中央寄せ1カラム) -->
     <main class="main-content container">
 
-        <!-- ヒーローセクション (上部のアクションボタン) -->
+        <!-- ヒーローセクション (2カラム: 左テキスト・右画像) -->
         <section class="hero-section">
-            <h1>勤怠管理Q&amp;Aチャットボット</h1>
-            <p class="subtitle">AIを活用したQ&Aチャットボットによる問い合わせ自動化と担当者の対応時間低減を図る</p>
-
-            <div class="hero-actions">
-                <a href="https://chatbot-app-70601432783.us-central1.run.app" class="btn btn-primary"
-                    target="_blank">勤怠ルールQ&Aチャットボットアプリはこちら</a>
+            <div class="hero-inner">
+                <!-- 左カラム: テキスト＆ボタン -->
+                <div class="hero-text">
+                    <h1>勤怠ルール<br>Q&amp;Aチャットボット</h1>
+                    <p class="subtitle">AIを活用したQ&Aチャットボットによる問い合わせ自動化と担当者の対応時間低減を図る</p>
+                    <div class="hero-stats">
+                        <div class="hero-stat-item">
+                            <span class="hero-stat-value">90%</span>
+                            <span class="hero-stat-label">テスト正答率</span>
+                        </div>
+                        <div class="hero-stat-divider"></div>
+                        <div class="hero-stat-item">
+                            <span class="hero-stat-value">PDF更新のみ</span>
+                            <span class="hero-stat-label">ルール更新方法</span>
+                        </div>
+                        <div class="hero-stat-divider"></div>
+                        <div class="hero-stat-item">
+                            <span class="hero-stat-value">無料枠で運用</span>
+                            <span class="hero-stat-label">アプリ運用コスト</span>
+                        </div>
+                    </div>
+                    <div class="hero-actions">
+                        <a href="https://chatbot-app-70601432783.us-central1.run.app" class="btn btn-primary"
+                            target="_blank">勤怠ルールQ&Aチャットボットアプリはこちらから</a>
+                    </div>
+                    <p class="hero-startup-note">⚠️
+                        未使用時はコスト削減のためサーバー数を0に自動縮小しています。<br>初回起動時に数十秒となる場合がございますが、しばらくお待ちください。</p>
+                </div>
+                <!-- 右カラム: チャットボット画面スクリーンショット -->
+                <div class="hero-image-col">
+                    <div class="hero-browser-frame">
+                        <div class="browser-bar">
+                            <span class="browser-dot dot-red"></span>
+                            <span class="browser-dot dot-yellow"></span>
+                            <span class="browser-dot dot-green"></span>
+                            <span class="browser-url">chatbot-app.run.app</span>
+                        </div>
+                        <div class="browser-body">
+                            <img src="img/chat_sample.png" alt="チャットボットアプリの画面" class="hero-screenshot">
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -396,28 +432,30 @@
                     <div class="feature-box-small">
                         <h4 class="commitment-item-title">1. ハルシネーション防止の徹底</h4>
                         <p class="commitment-item-desc">
-                            就業規則PDF以外の「推測による回答」を禁じるシステムプロンプトを設定。回答できない質問には「回答不可」と明示させることで、AIのハルシネーションの防止を徹底しました。
+                            就業規則PDF以外の「推測による回答」を禁じるシステムプロンプトを設定。<br>
+                            回答できない質問には「回答不可」と明示させることで、AIのハルシネーションの防止を徹底しました。
                         </p>
                     </div>
                     <div class="feature-box-small">
                         <h4 class="commitment-item-title">2. 機密情報の保護</h4>
                         <p class="commitment-item-desc">
                             Gemini APIキー等の認証情報は <strong>Secret Manager</strong>
-                            で一元管理し、ソースコードへのハードコードを徹底排除しています。PDF原本もコンテナ内のメモリ上に配置し、外部露出を防ぐ設計にしました。
+                            で一元管理し、ソースコードからの情報漏洩を徹底排除しています。<br>
+                            PDF原本もコンテナ内のメモリ上に配置し、外部露出を防ぐ設計にしました。
                         </p>
                     </div>
                     <div class="feature-box-small">
                         <h4 class="commitment-item-title">3. PDF更新によるPDCAサイクル</h4>
                         <p class="commitment-item-desc">
-                            就業規則の改訂時は管理者がPDFを差し替えるだけでAIの回答が即座に最新化される設計にしました。
-                            プログラムの修正や再デプロイが不要なPDCA改善サイクルを低コストで回せるようにしました。
+                            就業規則の改訂時は管理者がPDFを更新するだけでAIの回答が即座に最新化される設計にしました。<br>
+                            更新作業もあえて人間が行うことで、AIだけに任せた場合のリスクを排除しました。
                         </p>
                     </div>
                     <div class="feature-box-small">
                         <h4 class="commitment-item-title">4. ポートフォリオ全体のコスト運用</h4>
                         <p class="commitment-item-desc">
-                            Cloud Run・Firebase Hosting・Secret Manager・Artifact
-                            Registryの各サービスを無料枠の範囲内で運用できるよう設計。北米リージョン(us-central1)選択やインスタンスの自動縮小など、コストを意識した構成を徹底しています。
+                            Cloud Run・Firebase Hosting・Secret Manager・Artifact Registryの各サービスを無料枠の範囲内で運用できるよう設計。<br>
+                            北米リージョン(us-central1)選択やインスタンスの自動縮小など、コストを意識した構成を徹底しています。
                         </p>
                     </div>
                 </div>
@@ -496,8 +534,14 @@
     <!-- フッター -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2026 Fujio-m. All Rights Reserved. | <a href="https://github.com/" target="_blank">GitHub
-                    Repository</a></p>
+            <p style="margin-bottom: 8px; font-size: 0.82rem; color: #94a3b8;">
+                ※本プロジェクトはポートフォリオ用に作成したデモアプリです。実際の企業データや社内就業規則等は一切使用しておりません。
+            </p>
+            <p style="margin-bottom: 0;">
+                &copy; 2026 Fujio-m. All Rights Reserved. | <a
+                    href="https://github.com/Fujio-m/Myportfolio-ChatBot-GoogleCloud" target="_blank"
+                    style="color: #f8fafc; text-decoration: underline; margin-left: 4px;">GitHub Repository</a>
+            </p>
         </div>
     </footer>
 
