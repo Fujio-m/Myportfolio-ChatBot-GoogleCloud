@@ -1,7 +1,8 @@
-/* style.css - プレミアムでミニマルなCSS設計（上部固定ヘッダー & アコーディオン・ダブルポップアップ構成） */
+/* style.css - index.html用 */
 
 /* ----------------------------------
-   Reset & Base Styles
+   リセット & ベーススタイル
+   対象: ページ全体の土台 (body, *など)
 ---------------------------------- */
 * {
     box-sizing: border-box;
@@ -45,7 +46,8 @@ body {
 }
 
 /* ----------------------------------
-   Sticky Navigation Header
+   上部固定ナビゲーションヘッダー
+   対象: <header class="nav-header"> (index.html 28〜33行目 ロゴとProfileボタン)
 ---------------------------------- */
 .nav-header {
     position: fixed;
@@ -100,7 +102,9 @@ body {
 }
 
 /* ----------------------------------
-   Main Content Layout (1 Column Centered)
+   メインコンテンツレイアウト (中央寄せ1カラム)
+   対象: <main class="main-content container"> (index.html 36行目〜)
+   ※ padding-top は固定ヘッダーとの重なりを防止
 ---------------------------------- */
 .main-content {
     padding-top: 110px;
@@ -109,7 +113,8 @@ body {
 }
 
 /* ----------------------------------
-   Hero Section
+   ヒーローセクション (ファーストビュー)
+   対象: <section class="hero-section"> (index.html 39〜83行目 タイトル、統計実績、モックアップ画像)
 ---------------------------------- */
 .hero-section {
     padding: 40px 0 50px 0;
@@ -358,7 +363,8 @@ body {
 }
 
 /* ----------------------------------
-   Trigger Cards (Replacement for Accordions)
+   メインセクションのトリガーカード (クリックでモーダル起動)
+   対象: <div class="section-trigger-grid"> 内の #about-trigger, #architecture-trigger, #operation-trigger (index.html 86〜109行目)
 ---------------------------------- */
 .section-trigger-grid {
     display: grid;
@@ -412,7 +418,8 @@ body {
 
 
 /* ----------------------------------
-   Card Content Styles
+   カードレイアウト & 一般見出し・テキストスタイル
+   対象: .card, h3, p, .grid-2, .grid-3 など (index.html 全般のグリッドと見出し)
 ---------------------------------- */
 .card {
     background-color: var(--card-bg);
@@ -517,7 +524,8 @@ p {
 }
 
 /* ----------------------------------
-   Images & Explanation Details
+   画像ラッパー & 解説詳細
+   対象: <div class="img-wrapper"> (index.html 358行目, 405行目など フロー図・シーケンス図画像)
 ---------------------------------- */
 .img-wrapper {
     background-color: rgba(255, 255, 255, 0.02);
@@ -537,7 +545,8 @@ p {
 
 
 /* ----------------------------------
-   Tables
+   テーブル (表) スタイル
+   対象: <div class="table-wrapper">, <table class="stack-table"> (index.html 200行目〜 技術スタック表, 271行目〜 コスト表など)
 ---------------------------------- */
 .table-wrapper {
     overflow-x: auto;
@@ -574,7 +583,8 @@ tr:last-child td {
 }
 
 /* ----------------------------------
-   PDCA Cards
+   PDCAステップカード
+   対象: <div class="operation-steps"> 内の .step-card (index.html 361行目〜 PDCAサイクルモーダル内の各ステップカード)
 ---------------------------------- */
 .workflow-img {
     margin-bottom: 24px;
@@ -627,7 +637,8 @@ tr:last-child td {
 }
 
 /* ----------------------------------
-   Popup Modal Base Styling
+   ポップアップモーダル共通ベーススタイル
+   対象: <div class="modal">, <div class="modal-content"> (index.html 114行目〜 #about-modal, #architecture-modal など全てのモーダル)
 ---------------------------------- */
 .modal {
     position: fixed;
@@ -697,7 +708,8 @@ tr:last-child td {
     gap: 20px;
 }
 
-/* Modal specific elements for PDCA Steps */
+/* PDCAステップ詳細モーダル専用スタイル
+   対象: <div id="pdca-detail-modal"> (index.html 467行目〜 各ステップをクリックした際に開く画像拡大用サブモーダル) */
 .modal-img-wrapper {
     background-color: #ffffff;
     border: 1px solid var(--border-color);
@@ -725,7 +737,8 @@ tr:last-child td {
     line-height: 1.6;
 }
 
-/* Modal Sizes */
+/* モーダルのサイズ定義
+   対象: .modal-lg, .profile-modal-content (index.html 115行目, 193行目, 483行目など 各モーダルコンテナの横幅指定) */
 .modal-content.modal-lg {
     max-width: 1140px;
 }
@@ -742,7 +755,8 @@ tr:last-child td {
     font-style: italic;
 }
 
-/* Profile Qualifications Accordion */
+/* プロフィールモーダル内の保有資格アコーディオン
+   対象: <div class="accordion-group"> 内の <details>, <summary> (index.html 501行目〜 #profile-modal 内の保有資格ブロック) */
 .profile-modal-content .accordion-group details {
     margin-bottom: 8px;
     border: 1px solid var(--border-color);
@@ -785,7 +799,8 @@ tr:last-child td {
 }
 
 /* ----------------------------------
-   Footer
+   フッターセクション
+   対象: <footer class="footer"> (index.html 533行目〜 最下部コピーライト・注記・GitHubリンク)
 ---------------------------------- */
 .footer {
     padding: 24px 0;
@@ -797,7 +812,8 @@ tr:last-child td {
 }
 
 /* ----------------------------------
-   Responsive adjustments
+   レスポンシブデザイン調整 (スマホ・タブレット対応)
+   対象: 画面幅768px以下の際の全体レイアウト・2カラムやグリッドの1カラム化
 ---------------------------------- */
 @media (max-width: 768px) {
     .grid-2 {
@@ -847,8 +863,9 @@ tr:last-child td {
 }
 
 /* ----------------------------------
-   再構築理由ボックス (Rebuild Reason Box)
-   ---------------------------------- */
+   背景・再構築理由ボックス
+   対象: <div class="rebuild-reason-box"> (index.html 120行目〜 「開発の背景・動機」や「再構築の背景」の左ボーダー枠)
+---------------------------------- */
 .rebuild-reason-box {
     background-color: rgba(255, 255, 255, 0.02);
     border-left: 3px solid var(--primary);
@@ -877,7 +894,8 @@ tr:last-child td {
 }
 
 /* ----------------------------------
-   Sequence Diagram Trigger Box
+   サブモーダル起動トリガーボックス
+   対象: <div id="sequence-trigger">, <div id="commitment-trigger"> (index.html 246行目〜 「データフロー」「設計におけるこだわり」ボタン枠)
 ---------------------------------- */
 .sequence-trigger-box {
     background-color: rgba(255, 255, 255, 0.02);
@@ -912,7 +930,8 @@ tr:last-child td {
 }
 
 /* ----------------------------------
-   Table Utilities
+   テーブル用ユーティリティ
+   対象: <td class="table-category"> (index.html 210行目〜 表の「分類」「コンテナ」などの項目名カラム)
 ---------------------------------- */
 .table-category {
     font-weight: 600;
@@ -920,7 +939,8 @@ tr:last-child td {
 }
 
 /* ----------------------------------
-   Commitment Modal Items
+   「設計におけるこだわり」モーダル内の項目
+   対象: .commitment-item-title, .commitment-item-desc (index.html 433行目〜 ハルシネーション防止等のこだわりタイトルと説明)
 ---------------------------------- */
 .commitment-item-title {
     font-size: 1.05rem;
